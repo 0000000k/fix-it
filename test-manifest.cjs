@@ -1,0 +1,15 @@
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const dir=__dirname;
+const m=JSON.parse(fs.readFileSync(path.join(dir,'manifest.json'),'utf8'));
+assert.equal(m.name,'Fix it');
+assert.deepEqual(m.editorType,['figma']);
+assert.equal(m.documentAccess,'dynamic-page');
+for(const f of [m.main,m.ui])assert.ok(fs.existsSync(path.join(dir,f)),`Missing ${f}`);
+assert.deepEqual(m.networkAccess.devAllowedDomains,['http://localhost:38411','http://localhost:38412']);
+const source=fs.readFileSync(path.join(dir,m.main),'utf8');
+for(const domain of m.networkAccess.devAllowedDomains)assert.ok(source.includes(domain),`Missing main code reference to ${domain}`);
+assert.ok(!source.includes('http://127.0.0.1:'),'Client uses IP not listed in devAllowedDomains');
+console.log('PASS Figma manifest fields, relative file paths, dev domains and client fetch endpoints');

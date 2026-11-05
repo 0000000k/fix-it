@@ -1,0 +1,20 @@
+{
+  "name": "Fix it",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": [
+    "figma"
+  ],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": [
+      "https://cdnjs.cloudflare.com"
+    ],
+    "devAllowedDomains": [
+      "http://localhost:38411",
+      "http://localhost:38412"
+    ],
+    "reasoning": "PDF.js is downloaded on demand for PDF text extraction; optional localhost bridges connect to Confluence and to a Claude Desktop MCP companion."
+  }
+}

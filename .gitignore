@@ -1,0 +1,15 @@
+# Local settings, credentials and scan data
+.env
+.env.*
+!.env.example
+.fix-it-local/
+.fix-it-backup*/
+**/connection.json
+**/scans/
+**/scan-*.json
+**/*credentials*.json
+*.log
+.DS_Store
+node_modules/
+coverage/
+*.local
