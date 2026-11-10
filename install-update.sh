@@ -1,5 +1,5 @@
 #!/bin/bash
-# Fix it v0.7: install/update an existing Figma development plugin without Node.js.
+# Fix it v0.8: install/update an existing Figma development plugin without Node.js.
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TEMPLATE="$SCRIPT_DIR/manifest.json"
@@ -44,7 +44,7 @@ if [[ ! "$PLUGIN_ID" =~ ^[A-Za-z0-9_-]+$ ]]; then
   exit 1
 fi
 
-BACKUP="$TARGET/.fix-it-backup-before-v0.7"
+BACKUP="$TARGET/.fix-it-backup-before-v0.8"
 if [ -e "$BACKUP" ]; then
   BACKUP="$TARGET/.fix-it-backup-$(date +%Y%m%d-%H%M%S)"
 fi
@@ -52,6 +52,8 @@ mkdir -p "$BACKUP"
 for file in manifest.json code.js ui.html companion.js setup-claude.mjs confluence-bridge.js SKILL.md ; do
   [ -f "$TARGET/$file" ] && cp -p "$TARGET/$file" "$BACKUP/$file"
 done
+
+if [ -d "$TARGET/evals" ]; then cp -R "$TARGET/evals" "$BACKUP/evals"; fi
 
 # Build a valid manifest by adding the actual Figma-issued ID to Fix it's manifest.
 NEW_MANIFEST="$TARGET/manifest.json.fixit.tmp"
@@ -64,8 +66,10 @@ for file in code.js ui.html companion.js setup-claude.mjs confluence-bridge.js S
   cp -f "$SCRIPT_DIR/$file" "$TARGET/$file"
 done
 mv -f "$NEW_MANIFEST" "$TARGET/manifest.json"
+mkdir -p "$TARGET/evals"
+cp -f "$SCRIPT_DIR/evals/runner.cjs" "$SCRIPT_DIR/evals/demo-suite.json" "$TARGET/evals/"
 
-printf '\nFix it v0.7 installed successfully.\n'
+printf '\nFix it v0.8 installed successfully.\n'
 printf 'Figma plugin ID retained: %s\n' "$PLUGIN_ID"
 printf 'Installed in: %s\n' "$TARGET"
 printf 'Backup: %s\n' "$BACKUP"

@@ -11,4 +11,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node test-manifest.cjs && node test-figma.cjs && node test-companion.cjs && node test-evals.cjs
+      - run: node test-manifest.cjs && node test-figma.cjs && node test-companion.cjs && node test-evals.cjs && node test-installer.cjs

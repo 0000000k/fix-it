@@ -74,6 +74,7 @@ node test-manifest.cjs
 node test-figma.cjs
 node test-companion.cjs
 node test-evals.cjs
+node test-installer.cjs
 ```
 
 The tests cover manifest structure, mocked Figma behavior, and the local scan-to-MCP-findings roundtrip. They are **not** a substitute for manual validation in Figma Desktop and Claude Desktop.
