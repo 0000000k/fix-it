@@ -41,5 +41,11 @@ async function wait(){for(let n=0;n<40;n++){try{const r=await request('GET','/he
  const result=await request('GET','/v1/scans/'+scanId+'/findings',code);
  assert.equal(result.body.findings.length,1);assert.equal(result.body.findings[0].suggestion,'Sign in');
  assert.equal(result.body.status,'complete');
+ const resultEvals=await request('POST','/v1/evals/run',code,{});
+ assert.equal(resultEvals.status,200);
+ assert.equal(resultEvals.body.report.summary.regressions,3);
+ const stored=await request('GET','/v1/evals/latest',code);
+ assert.equal(stored.body.report.summary.improvements,2);
+ assert.equal((await request('GET','/v1/evals/latest','wrong')).status,401);
  console.log('PASS manifest-independent MCP + HTTP full scan → findings flow.');
 }finally{child.kill('SIGTERM');fs.rmSync(root,{recursive:true,force:true});}})().catch(err=>{console.error(err);process.exitCode=1;child.kill();});

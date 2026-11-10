@@ -61,12 +61,19 @@ Claude is **not** automatically triggered from the Scan button, and a ChatGPT in
 
 Run `node confluence-bridge.js` after supplying your own `ATLASSIAN_EMAIL` and `ATLASSIAN_API_TOKEN` environment variables. Copy the temporary connection code from Terminal into the plugin. Only pages that your account can access can be imported. This is a local prototype bridge, **not a deployable service**.
 
+## Regression evals (local MVP)
+
+The new **Evals** tab can run six synthetic UX writing regression cases or import your own private JSON suite. A connected local companion evaluates before/after copy using explicit deterministic checks and flags regressions. Results are stored in `~/.fix-it-local/evals/latest.json`.
+
+This first version does **not** perform AI or blind grading. See [evals/README.md](evals/README.md) for supported assertions, case format and limitations.
+
 ## Tests
 
 ```bash
 node test-manifest.cjs
 node test-figma.cjs
 node test-companion.cjs
+node test-evals.cjs
 ```
 
 The tests cover manifest structure, mocked Figma behavior, and the local scan-to-MCP-findings roundtrip. They are **not** a substitute for manual validation in Figma Desktop and Claude Desktop.

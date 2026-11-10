@@ -192,6 +192,12 @@ figma.ui.onmessage = async message => {
       await publishScan();
     } else if (message.type === 'refresh-ai') {
       await refreshAi();
+    } else if (message.type === 'run-evals') {
+      const response=await companionRequest('/v1/evals/run',{method:'POST',body:JSON.stringify(message.suite?{suite:message.suite}:{})});
+      figma.ui.postMessage({type:'eval-results',report:response.report});
+    } else if (message.type === 'latest-evals') {
+      const response=await companionRequest('/v1/evals/latest');
+      figma.ui.postMessage({type:'eval-results',report:response.report});
     } else if (message.type === 'import-confluence') {
       await importConfluencePage(message);
     } else if (message.type === 'save-knowledge') {

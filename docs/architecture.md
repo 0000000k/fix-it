@@ -28,3 +28,14 @@ Fix it Plugin (code.js + ui.html)
 
 ## Data privacy
 No content from user-owned Figma documents or corporate writing guides is shipped with this repository. Any user-provided data stays in Figma storage or local companion files unless explicitly shared with an external integration.
+
+## Evals
+
+```text
+Fix it Evals tab → localhost:38412 (authenticated)
+                   ├─ evals/demo-suite.json or private JSON import
+                   ├─ evals/runner.cjs (deterministic checks)
+                   └─ ~/.fix-it-local/evals/latest.json (local report)
+```
+
+No cloud API, automatic Figma edits, LLM judge or blind grading is involved in the MVP.

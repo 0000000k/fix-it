@@ -16,6 +16,8 @@ const figma={
 };
 const mockFetch=async(url,options)=>{
  assert.match(url,/localhost:38412/);
+ if(url.endsWith('/v1/evals/run'))return {ok:true,json:async()=>({report:{summary:{total:1,regressions:0,improvements:0},cases:[]}})};
+ if(url.endsWith('/v1/evals/latest'))return {ok:true,json:async()=>({report:{summary:{total:1,regressions:0,improvements:0},cases:[]}})};
  if(url.endsWith('/v1/status'))return {ok:true,json:async()=>({connected:true,latest:null})};
  if(url.endsWith('/v1/scans')){posted=JSON.parse(options.body);return {ok:true,json:async()=>({scanId:'scan-123456789abc',submitted:posted.texts.length,total:posted.total})};}
  if(url.endsWith('/findings'))return {ok:true,json:async()=>({findings:[{nodeId:'22:17',category:'Terminology',severity:'medium',suggestion:'Sign in',reason:'Approved term'}],status:'complete'})};
@@ -37,5 +39,7 @@ const sleep=()=>new Promise(r=>setTimeout(r,0));
  assert.ok(textMessages.some(x=>x.type==='ai-published'));
  await figma.ui.onmessage({type:'refresh-ai'});
  assert.equal(textMessages.findLast(x=>x.type==='ai-findings').findings[0].nodeId,'22:17');
+ await figma.ui.onmessage({type:'run-evals'});
+ assert.ok(textMessages.some(x=>x.type==='eval-results'));
  console.log('PASS mocked Figma scan, local rules, connect, publish and AI finding refresh.');
 })().catch(e=>{console.error(e);process.exitCode=1});

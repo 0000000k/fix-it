@@ -11,6 +11,9 @@ const DATA_DIR = process.env.FIXIT_DATA_DIR || path.join(os.homedir(), '.fix-it-
 const PORT = Number(process.env.FIXIT_PORT || 38412);
 const CONFIG = path.join(DATA_DIR, 'connection.json');
 const SNAPSHOTS = path.join(DATA_DIR, 'scans');
+const {runSuite}=require('./evals/runner.cjs');
+const demoSuite=require('./evals/demo-suite.json');
+const LATEST_EVAL=path.join(DATA_DIR,'evals','latest.json');
 function init() {
   fs.mkdirSync(SNAPSHOTS, { recursive: true, mode: 0o700 });
   if (!fs.existsSync(CONFIG)) writeJson(CONFIG, { connectionCode: crypto.randomBytes(24).toString('hex'), createdAt: new Date().toISOString() });
@@ -91,6 +94,25 @@ function serve(req,res){
   const given=String(req.headers['x-fix-it-code']||''); const expected=code();
   if(given.length!==expected.length||!crypto.timingSafeEqual(Buffer.from(given),Buffer.from(expected))){httpJson(res,401,{error:'Wrong connection code. Run node setup-claude.mjs --show-code.'});return;}
   if(req.method==='GET'&&req.url==='/v1/status'){httpJson(res,200,{connected:true,latest:scanList()[0]||null});return;}
+  if(req.method==='GET'&&req.url==='/v1/evals/latest'){
+    if(!fs.existsSync(LATEST_EVAL)){httpJson(res,404,{error:'No regression run saved yet.'});return;}
+    try{httpJson(res,200,{report:readJson(LATEST_EVAL)});}catch(e){httpJson(res,500,{error:'Cannot read last report.'});}
+    return;
+  }
+  if(req.method==='POST'&&req.url==='/v1/evals/run'){
+    let size=0,parts=[],tooLarge=false;
+    req.on('data',part=>{size+=part.length;if(size>250000)tooLarge=true;else parts.push(part);});
+    req.on('end',()=>{
+      if(tooLarge){httpJson(res,413,{error:'Suite exceeds size limit.'});return;}
+      try{
+        const input=JSON.parse(Buffer.concat(parts).toString('utf8'));
+        const report=runSuite(input&&input.suite!==undefined?input.suite:demoSuite);
+        writeJson(LATEST_EVAL,report);
+        httpJson(res,200,{report});
+      }catch(e){httpJson(res,400,{error:String(e.message||e)});}
+    });
+    return;
+  }
   const match=req.url.match(/^\/v1\/scans\/(scan-[a-f0-9-]+)\/findings$/);
   if(req.method==='GET'&&match){try{const s=loadScan(match[1]);httpJson(res,200,{scanId:s.id,status:s.analysisStatus,findings:s.aiFindings||[]});}catch(e){httpJson(res,404,{error:e.message});}return;}
   if(req.method==='POST'&&req.url==='/v1/scans'){
