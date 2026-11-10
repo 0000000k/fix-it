@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {runSuite}=require('./evals/runner.cjs');
+const demo=require('./evals/demo-suite.json');
+const report=runSuite(demo);
+assert.deepEqual(report.summary,{total:6,regressions:3,improvements:2,stablePass:1,stableFail:0});
+assert.equal(report.cases[0].status,'regression');
+assert.equal(report.cases[2].status,'improvement');
+assert.throws(()=>runSuite({cases:[]}),/1–100/);
+assert.throws(()=>runSuite({cases:[demo.cases[0],demo.cases[0]]}),/Duplicate case/);
+assert.throws(()=>runSuite({cases:[{id:'x',title:'x',before:'x',after:'x',checks:[{id:'bad',type:'eval'}]}]}),/Unsupported check/);
+console.log('PASS 6 real deterministic cases, status comparison and validation.');

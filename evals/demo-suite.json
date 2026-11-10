@@ -1,0 +1,143 @@
+{
+  "id": "fix-it-public-demo-v1",
+  "name": "Public synthetic UX writing tests",
+  "cases": [
+    {
+      "id": "UXW-EVAL-014",
+      "title": "Specific delivery failure",
+      "guidelineId": "UXW-014",
+      "context": "Delivery failed; retry availability is unknown.",
+      "before": "Couldn't deliver documents",
+      "after": "Something went wrong. Please try again.",
+      "checks": [
+        {
+          "id": "delivery",
+          "type": "must_include",
+          "phrase": "deliver",
+          "critical": true,
+          "message": "Identify the delivery failure."
+        },
+        {
+          "id": "docs",
+          "type": "must_include",
+          "phrase": "documents",
+          "critical": true,
+          "message": "Mention undelivered documents."
+        },
+        {
+          "id": "retry",
+          "type": "must_not_include",
+          "phrase": "try again",
+          "critical": true,
+          "message": "Do not promise retry availability."
+        }
+      ]
+    },
+    {
+      "id": "UXW-EVAL-003",
+      "title": "Approved sign-in label",
+      "guidelineId": "UXW-003",
+      "context": "An authentication button.",
+      "before": "Sign in",
+      "after": "Log in",
+      "checks": [
+        {
+          "id": "auth",
+          "type": "exact",
+          "phrase": "Sign in",
+          "critical": true,
+          "message": "Use the approved authentication label."
+        }
+      ]
+    },
+    {
+      "id": "UXW-EVAL-006",
+      "title": "Workflow CTA sentence case",
+      "guidelineId": "UXW-006",
+      "context": "A generic action without proper nouns.",
+      "before": "Create New Workflow",
+      "after": "Create new workflow",
+      "checks": [
+        {
+          "id": "case",
+          "type": "exact",
+          "phrase": "Create new workflow",
+          "critical": true,
+          "message": "Use sentence case."
+        }
+      ]
+    },
+    {
+      "id": "UXW-EVAL-019",
+      "title": "Do not invent account status",
+      "guidelineId": "UXW-019",
+      "context": "Only workspace permissions are known.",
+      "before": "You don't have access to this workspace.",
+      "after": "Your account has been disabled.",
+      "checks": [
+        {
+          "id": "access",
+          "type": "must_include",
+          "phrase": "access",
+          "critical": true,
+          "message": "Name the access issue."
+        },
+        {
+          "id": "state",
+          "type": "must_not_include",
+          "phrase": "disabled",
+          "critical": true,
+          "message": "Do not infer disabled account status."
+        }
+      ]
+    },
+    {
+      "id": "UXW-EVAL-021",
+      "title": "Drafts empty state",
+      "guidelineId": "UXW-021",
+      "context": "The drafts list is empty.",
+      "before": "No drafts yet",
+      "after": "No drafts yet",
+      "checks": [
+        {
+          "id": "drafts",
+          "type": "must_include",
+          "phrase": "drafts",
+          "critical": true,
+          "message": "Name the empty collection."
+        },
+        {
+          "id": "length",
+          "type": "max_words",
+          "limit": 5,
+          "critical": true,
+          "message": "Keep the title within five words."
+        }
+      ]
+    },
+    {
+      "id": "UXW-EVAL-025",
+      "title": "Save failure",
+      "guidelineId": "UXW-025",
+      "context": "The editor could not save changes.",
+      "before": "Unable to complete request",
+      "after": "Couldn't save changes",
+      "checks": [
+        {
+          "id": "save",
+          "type": "must_include",
+          "phrase": "save",
+          "critical": true,
+          "message": "Name the failed operation."
+        },
+        {
+          "id": "changes",
+          "type": "must_include",
+          "phrase": "changes",
+          "critical": true,
+          "message": "State what was not saved."
+        }
+      ]
+    }
+  ]
+}
